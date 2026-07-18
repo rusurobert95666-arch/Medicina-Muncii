@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Cerere Aviz Medical</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+<link rel="stylesheet" href="css/style.css">
+
+</head>
+
+<body>
+
+<div class="app">
+
+<aside class="sidebar">
+
+<div class="brand">
+
+<div class="logo">
+<i class="fa-solid fa-notes-medical"></i>
+</div>
+
+<div>
+
+<h2>Medicina Muncii</h2>
+
+<p>Atlantis</p>
+
+</div>
+
+</div>
+
+<ul class="menu">
+
+<li onclick="location.href='index.html'">
+<i class="fa-solid fa-house"></i>
+<span>Dashboard</span>
+</li>
+
+<li class="active">
+<i class="fa-solid fa-file-medical"></i>
+<span>Cerere</span>
+</li>
+
+<li>
+<i class="fa-solid fa-file-pdf"></i>
+<span>Avize</span>
+</li>
+
+<li>
+<i class="fa-solid fa-clock"></i>
+<span>Istoric</span>
+</li>
+
+</ul>
+
+</aside>
+
+<main>
+
+<header>
+
+<div>
+
+<h1>Cerere Aviz Medical</h1>
+
+<p>Completează toate câmpurile.</p>
+
+</div>
+
+</header>
+
+<form id="medicalForm">
+
+<div class="panel">
+
+<h2>Date personale</h2>
+
+<div class="grid2">
+
+<input id="nume" placeholder="Nume și prenume">
+
+<input id="varsta" placeholder="Vârsta">
+
+<input id="firma" placeholder="Firma">
+
+<input id="locatie" placeholder="Locație">
+
+<input id="inaltime" placeholder="Înălțime">
+
+<input id="greutate" placeholder="Greutate">
+
+<input id="cnp" placeholder="CNP">
+
+<input value="Atlantis" readonly>
+
+</div>
+
+</div>
+<div class="panel">
+
+<h2>Stare de sănătate</h2>
+
+<div class="question">
+
+<label>Suferiți de boli cronice?</label>
+
+<select>
+
+<option>Nu</option>
+
+<option>Da</option>
+
+</select>
+
+<input placeholder="Specificați dacă DA">
+
+</div>
+
+<div class="question">
+
+<label>Aveți alergii cunoscute?</label>
+
+<select>
+
+<option>Nu</option>
+
+<option>Da</option>
+
+</select>
+
+<input placeholder="Specificați dacă DA">
+
+</div>
+
+<div class="question">
+
+<label>Urmați tratament medical?</label>
+
+<select>
+
+<option>Nu</option>
+
+<option>Da</option>
+
+</select>
+
+<input placeholder="Specificați dacă DA">
+
+</div>
+
+<div class="question">
+
+<label>Intervenții chirurgicale?</label>
+
+<select>
+
+<option>Nu</option>
+
+<option>Da</option>
+
+</select>
+
+<input placeholder="Specificați dacă DA">
+
+</div>
+
+</div>
+<div class="panel">
+
+<h2>Factori de risc</h2>
+
+<div class="grid3">
+
+<label>
+
+Fumați?
+
+<select>
+
+<option>Nu</option>
+
+<option>Da</option>
+
+</select>
+
+</label>
+
+<label>
+
+Consumați alcool?
+
+<select>
+
+<option>Nu</option>
+
+<option>Da</option>
+
+</select>
+
+</label>
+
+<label>
+
+Lucrați în echipă?
+
+<select>
+
+<option>Da</option>
+
+<option>Nu</option>
+
+</select>
+
+</label>
+
+</div>
+
+</div>
+<div class="panel">
+
+<h2>Simptome în ultimele 6 luni</h2>
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Simptom</th>
+
+<th>Da</th>
+
+<th>Nu</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+<tr>
+
+<td>Dureri de cap</td>
+
+<td><input type="radio" name="cap"></td>
+
+<td><input type="radio" name="cap"></td>
+
+</tr>
+
+<tr>
+
+<td>Tulburări vedere</td>
+
+<td><input type="radio" name="vedere"></td>
+
+<td><input type="radio" name="vedere"></td>
+
+</tr>
+
+<tr>
+
+<td>Dureri spate</td>
+
+<td><input type="radio" name="spate"></td>
+
+<td><input type="radio" name="spate"></td>
+
+</tr>
+
+<tr>
+
+<td>Probleme respiratorii</td>
+
+<td><input type="radio" name="resp"></td>
+
+<td><input type="radio" name="resp"></td>
+
+</tr>
+
+<tr>
+
+<td>Probleme auz</td>
+
+<td><input type="radio" name="auz"></td>
+
+<td><input type="radio" name="auz"></td>
+
+</tr>
+
+<tr>
+
+<td>Amețeli</td>
+
+<td><input type="radio" name="ameteli"></td>
+
+<td><input type="radio" name="ameteli"></td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+<div style="margin-top:25px">
+
+<button class="newBtn">
+
+Trimite Cererea
+
+</button>
+
+</div>
+
+</form>
+
+</main>
+
+</div>
+
+<script src="js/detalii.js"></script>
+
+</body>
+</html>
