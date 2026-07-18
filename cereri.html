@@ -152,6 +152,33 @@
             return;
         }
 
+        // Verificare valabilitate 2 luni pentru același CNP
+        const querySnapshot = await db.collection("cereri").where("cnp", "==", cnp).get();
+
+        if (!querySnapshot.empty) {
+            let ceaMaiVeche = null;
+            querySnapshot.forEach(doc => {
+                const data = doc.data();
+                if (!ceaMaiVeche || data.timestamp < ceaMaiVeche.timestamp) {
+                    ceaMaiVeche = data;
+                }
+            });
+
+            if (ceaMaiVeche && ceaMaiVeche.timestamp) {
+                const dataEmiterii = ceaMaiVeche.timestamp.toDate();
+                const dataExpirare = new Date(dataEmiterii);
+                dataExpirare.setMonth(dataExpirare.getMonth() + 2);
+
+                const azi = new Date();
+
+                if (azi < dataExpirare) {
+                    const zileRamase = Math.ceil((dataExpirare - azi) / (1000 * 60 * 60 * 24));
+                    alert(`❌ Există deja un aviz valabil pentru acest CNP!\nValabilitate rămasă: aproximativ ${zileRamase} zile.`);
+                    return;
+                }
+            }
+        }
+
         const cerere = {
             nume: nume,
             firma: firma,
