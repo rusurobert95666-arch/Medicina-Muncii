@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Medicina Muncii</title>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 </head>
@@ -52,19 +50,6 @@
 </div>
 
 <script>
-    const firebaseConfig = {
-        apiKey: "AIzaSyC2GWF1iu5U2W6kVU9u_4kgawScomCHQA",
-        authDomain: "medicina-muncii-27010.firebaseapp.com",
-        projectId: "medicina-muncii-27010",
-        storageBucket: "medicina-muncii-27010.firebasestorage.app",
-        messagingSenderId: "318304709818",
-        appId: "1:318304709818:web:c6ae716b7a2f97545eedb8",
-        measurementId: "G-F99MNSDMEE"
-    };
-
-    const app = firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-
     if (localStorage.getItem("role") !== "admin") {
         alert("Acces interzis!");
         window.location.href = "login.html";
@@ -78,53 +63,93 @@
     }
 
     function loadStats() {
-        // Poți lăsa statisticile locale sau le faci din Firebase
-        db.collection("cereri").get().then(snapshot => {
-            const total = snapshot.size;
-            // Adaugă logica pentru statistici dacă vrei
-            document.getElementById("stats").innerHTML = `
-                <div class="bg-white p-8 rounded-3xl shadow">
-                    <p class="text-gray-500">Total Cereri</p>
-                    <p class="text-6xl font-bold mt-4">${total}</p>
-                </div>
-            `;
-        });
+        const cereri = JSON.parse(localStorage.getItem("cereri")) || [];
+        const total = cereri.length;
+        const noi = cereri.filter(c => c.status === "Nou").length;
+        const asteptare = cereri.filter(c => c.status === "Nou" || c.status === "În Așteptare").length;
+        const emise = cereri.filter(c => c.status === "Emis").length;
+
+        document.getElementById("stats").innerHTML = `
+            <div class="bg-white rounded-3xl shadow p-8">
+                <p class="text-gray-500">Cereri Noi</p>
+                <p class="text-6xl font-bold text-blue-600 mt-4">${noi}</p>
+            </div>
+            <div class="bg-white rounded-3xl shadow p-8">
+                <p class="text-gray-500">Avize Emise</p>
+                <p class="text-6xl font-bold text-green-600 mt-4">${emise}</p>
+            </div>
+            <div class="bg-white rounded-3xl shadow p-8">
+                <p class="text-gray-500">În Așteptare</p>
+                <p class="text-6xl font-bold text-orange-500 mt-4">${asteptare}</p>
+            </div>
+            <div class="bg-white rounded-3xl shadow p-8">
+                <p class="text-gray-500">Total</p>
+                <p class="text-6xl font-bold mt-4">${total}</p>
+            </div>
+        `;
     }
 
     function loadCereri() {
         const tbody = document.getElementById("cereriBody");
         tbody.innerHTML = "";
 
-        db.collection("cereri").orderBy("timestamp", "desc").onSnapshot(snapshot => {
-            tbody.innerHTML = "";
-            snapshot.forEach(doc => {
-                const c = doc.data();
-                const tr = document.createElement("tr");
-                tr.className = "border-b hover:bg-gray-50";
-                tr.innerHTML = `
-                    <td class="p-5 font-medium">${c.nume}</td>
-                    <td class="p-5">${c.firma}</td>
-                    <td class="text-center"><span class="px-4 py-1 rounded-full text-sm ${c.status === 'Emis' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'}">${c.status}</span></td>
-                    <td class="text-center text-sm">${c.data}</td>
-                    <td class="text-center">
-                        <button onclick="viewCerere('${doc.id}')" class="text-blue-600 hover:text-blue-800 mx-2"><i class="fas fa-eye"></i></button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
+        const cereri = JSON.parse(localStorage.getItem("cereri")) || [];
+
+        if (cereri.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="5" class="text-center py-12 text-gray-500">Nu există cereri încă.</td></tr>`;
+            return;
+        }
+
+        cereri.forEach(c => {
+            const tr = document.createElement("tr");
+            tr.className = "border-b hover:bg-gray-50";
+            tr.innerHTML = `
+                <td class="p-5 font-medium">${c.nume}</td>
+                <td class="p-5">${c.firma}</td>
+                <td class="text-center">
+                    <span class="px-5 py-1 rounded-full text-sm ${c.status === 'Emis' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'}">
+                        ${c.status}
+                    </span>
+                </td>
+                <td class="text-center text-sm">${c.data}</td>
+                <td class="text-center">
+                    ${c.status !== 'Emis' ? `<button onclick="emiteAviz(${c.id})" class="text-green-600 hover:text-green-800 mx-2 text-xl"><i class="fas fa-check"></i></button>` : ''}
+                    <button onclick="viewCerere(${c.id})" class="text-blue-600 hover:text-blue-800 mx-2 text-xl"><i class="fas fa-eye"></i></button>
+                    <button onclick="stergeCerere(${c.id})" class="text-red-600 hover:text-red-800 mx-2 text-xl"><i class="fas fa-trash"></i></button>
+                </td>
+            `;
+            tbody.appendChild(tr);
         });
     }
 
+    function emiteAviz(id) {
+        if (!confirm("Confirmi emiterea avizului?")) return;
+        let cereri = JSON.parse(localStorage.getItem("cereri")) || [];
+        const cerere = cereri.find(c => c.id === id);
+        if (cerere) cerere.status = "Emis";
+        localStorage.setItem("cereri", JSON.stringify(cereri));
+        loadCereri();
+        loadStats();
+    }
+
     function viewCerere(id) {
-        db.collection("cereri").doc(id).get().then(doc => {
-            if (doc.exists) {
-                const c = doc.data();
-                let html = `<div style="padding:40px; font-family:Arial; max-width:1000px; margin:auto; background:#f8fafc; border:2px solid #1e3a8a; border-radius:12px;">... detaliile ... </div>`;
-                const win = window.open("", "_blank");
-                win.document.write(html);
-                win.document.close();
-            }
-        });
+        const cereri = JSON.parse(localStorage.getItem("cereri")) || [];
+        const cerere = cereri.find(c => c.id === id);
+        if (!cerere) return alert("Cererea nu a fost găsită!");
+
+        let html = `<div style="padding:40px; font-family:Arial; max-width:1000px; margin:auto; background:#f8fafc; border:2px solid #1e3a8a; border-radius:12px;">... (toate detaliile) ...</div>`;
+        const win = window.open("", "_blank");
+        win.document.write(html);
+        win.document.close();
+    }
+
+    function stergeCerere(id) {
+        if (!confirm("Ești sigur?")) return;
+        let cereri = JSON.parse(localStorage.getItem("cereri")) || [];
+        cereri = cereri.filter(c => c.id !== id);
+        localStorage.setItem("cereri", JSON.stringify(cereri));
+        loadCereri();
+        loadStats();
     }
 
     window.onload = () => {
