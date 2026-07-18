@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cerere Nouă - Medicina Muncii</title>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100">
@@ -34,14 +36,8 @@
                 </div>
 
                 <div class="grid grid-cols-2 gap-6 mt-6">
-                    <div>
-                        <label class="block font-semibold mb-2">SC ...... SRL</label>
-                        <input type="text" id="firma" class="w-full border rounded-2xl px-5 py-4" placeholder="Numele firmei" required>
-                    </div>
-                    <div>
-                        <label class="block font-semibold mb-2">Locație</label>
-                        <input type="text" id="locatie" class="w-full border rounded-2xl px-5 py-4" placeholder="Locația firmei" required>
-                    </div>
+                    <div><label class="block font-semibold mb-2">Firmă</label><input type="text" id="firma" class="w-full border rounded-2xl px-5 py-4" required></div>
+                    <div><label class="block font-semibold mb-2">Locație</label><input type="text" id="locatie" class="w-full border rounded-2xl px-5 py-4" required></div>
                 </div>
 
                 <div class="mt-6">
@@ -123,7 +119,19 @@
 </div>
 
 <script>
-    // Protecție login
+    const firebaseConfig = {
+        apiKey: "AIzaSyC2GWF1iu5U2W6kVU9u_4kgawScomCHQA",
+        authDomain: "medicina-muncii-27010.firebaseapp.com",
+        projectId: "medicina-muncii-27010",
+        storageBucket: "medicina-muncii-27010.firebasestorage.app",
+        messagingSenderId: "318304709818",
+        appId: "1:318304709818:web:c6ae716b7a2f97545eedb8",
+        measurementId: "G-F99MNSDMEE"
+    };
+
+    const app = firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
     if (localStorage.getItem("role") !== "user" && localStorage.getItem("role") !== "admin") {
         alert("Trebuie să te autentifici mai întâi!");
         window.location.href = "login.html";
@@ -134,7 +142,7 @@
         field.classList.toggle("hidden", radio.value !== "Da");
     }
 
-    function trimiteCerere() {
+    async function trimiteCerere() {
         const nume = document.getElementById("nume").value.trim();
         const firma = document.getElementById("firma").value.trim();
         const cnp = document.getElementById("cnp").value.trim();
@@ -144,27 +152,7 @@
             return;
         }
 
-        // Verificare valabilitate 2 luni
-        const cereriExistente = JSON.parse(localStorage.getItem("cereri")) || [];
-        const cerereExista = cereriExistente.find(c => c.cnp === cnp);
-
-        if (cerereExista) {
-            const [zi, luna, an] = cerereExista.data.split('.').map(Number);
-            const dataEmiterii = new Date(an, luna - 1, zi);
-            const dataExpirare = new Date(dataEmiterii);
-            dataExpirare.setMonth(dataExpirare.getMonth() + 2);
-
-            const azi = new Date();
-
-            if (azi < dataExpirare) {
-                const zileRamase = Math.ceil((dataExpirare - azi) / (1000 * 60 * 60 * 24));
-                alert(`❌ Există deja un aviz valabil pentru acest CNP!\nValabilitate rămasă: aproximativ ${zileRamase} zile.`);
-                return;
-            }
-        }
-
         const cerere = {
-            id: Date.now(),
             nume: nume,
             firma: firma,
             locatie: document.getElementById("locatie").value || 'N/A',
@@ -187,15 +175,17 @@
             s3: getRadioValue("s3"),
             s4: getRadioValue("s4"),
             s5: getRadioValue("s5"),
-            s6: getRadioValue("s6")
+            s6: getRadioValue("s6"),
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
         };
 
-        let cereri = JSON.parse(localStorage.getItem("cereri")) || [];
-        cereri.unshift(cerere);
-        localStorage.setItem("cereri", JSON.stringify(cereri));
-
-        alert(`✅ Cererea pentru ${nume} a fost trimisă!`);
-        document.getElementById("cerereForm").reset();
+        try {
+            await db.collection("cereri").add(cerere);
+            alert(`✅ Cererea pentru ${nume} a fost trimisă!`);
+            document.getElementById("cerereForm").reset();
+        } catch (error) {
+            alert("Eroare la trimitere: " + error.message);
+        }
     }
 
     function getRadioValue(name) {
