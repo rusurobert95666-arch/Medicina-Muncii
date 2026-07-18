@@ -80,17 +80,27 @@
     function loadStats() {
         db.collection("cereri").get().then(snapshot => {
             const total = snapshot.size;
-            const emise = snapshot.docs.filter(doc => doc.data().status === "Emis").length;
-            const noi = total - emise;
+            let emise = 0;
+            let asteptare = 0;
+
+            snapshot.forEach(doc => {
+                const status = doc.data().status;
+                if (status === "Emis") emise++;
+                else asteptare++;
+            });
 
             document.getElementById("stats").innerHTML = `
                 <div class="bg-white p-8 rounded-3xl shadow">
                     <p class="text-gray-500">Cereri Noi</p>
-                    <p class="text-6xl font-bold text-blue-600 mt-4">${noi}</p>
+                    <p class="text-6xl font-bold text-blue-600 mt-4">${asteptare}</p>
                 </div>
                 <div class="bg-white p-8 rounded-3xl shadow">
                     <p class="text-gray-500">Avize Emise</p>
                     <p class="text-6xl font-bold text-green-600 mt-4">${emise}</p>
+                </div>
+                <div class="bg-white p-8 rounded-3xl shadow">
+                    <p class="text-gray-500">În Așteptare</p>
+                    <p class="text-6xl font-bold text-orange-500 mt-4">${asteptare}</p>
                 </div>
                 <div class="bg-white p-8 rounded-3xl shadow">
                     <p class="text-gray-500">Total</p>
@@ -108,24 +118,33 @@
             tbody.innerHTML = "";
             snapshot.forEach(doc => {
                 const c = doc.data();
+                const id = doc.id;
                 const tr = document.createElement("tr");
                 tr.className = "border-b hover:bg-gray-50";
                 tr.innerHTML = `
                     <td class="p-5 font-medium">${c.nume}</td>
                     <td class="p-5">${c.firma}</td>
-                    <td class="text-center">
-                        <span class="px-4 py-1 rounded-full text-sm ${c.status === 'Emis' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'}">
-                            ${c.status}
-                        </span>
-                    </td>
+                    <td class="text-center"><span class="px-4 py-1 rounded-full text-sm ${c.status === 'Emis' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'}">${c.status}</span></td>
                     <td class="text-center text-sm">${c.data}</td>
                     <td class="text-center">
-                        <button onclick="viewCerere('${doc.id}')" class="text-blue-600 hover:text-blue-800 mx-2"><i class="fas fa-eye"></i></button>
+                        ${c.status !== 'Emis' ? `<button onclick="emiteAviz('${id}')" class="text-green-600 hover:text-green-800 mx-2"><i class="fas fa-check"></i></button>` : ''}
+                        <button onclick="viewCerere('${id}')" class="text-blue-600 hover:text-blue-800 mx-2"><i class="fas fa-eye"></i></button>
+                        <button onclick="stergeCerere('${id}')" class="text-red-600 hover:text-red-800 mx-2"><i class="fas fa-trash"></i></button>
                     </td>
                 `;
                 tbody.appendChild(tr);
             });
         });
+    }
+
+    function emiteAviz(id) {
+        if (!confirm("Confirmi emiterea avizului?")) return;
+        db.collection("cereri").doc(id).update({ status: "Emis" });
+    }
+
+    function stergeCerere(id) {
+        if (!confirm("Ești sigur că vrei să ștergi această cerere?")) return;
+        db.collection("cereri").doc(id).delete();
     }
 
     function viewCerere(id) {
