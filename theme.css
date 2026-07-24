@@ -1,64 +1,110 @@
-<!DOCTYPE html>
-<html lang="ro">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Medicina Muncii</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="css/theme.css">
-</head>
-<body class="mm-auth-bg flex items-center justify-center min-h-screen p-6">
-    <div class="bg-white p-10 rounded-[36px] shadow-2xl w-full max-w-md">
-        <div class="flex flex-col items-center mb-6">
-            <div class="w-16 h-16 rounded-3xl flex items-center justify-center font-display font-bold text-3xl mb-4" style="background:linear-gradient(135deg,#06B6A8,#7C5CFF); color:#fff;">MM</div>
-            <h1 class="font-display text-3xl font-bold text-[var(--ink)]">Medicina Muncii</h1>
-            <p class="text-gray-400 text-sm">Atlantis</p>
-        </div>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
-        <div class="pulse-divider mx-auto">
-            <svg viewBox="0 0 150 30" width="100%" height="100%">
-                <defs>
-                    <linearGradient id="pulseGrad" x1="0" y1="0" x2="1" y2="0">
-                        <stop offset="0%" stop-color="#06B6A8"/>
-                        <stop offset="100%" stop-color="#7C5CFF"/>
-                    </linearGradient>
-                </defs>
-                <path class="pulse-line" d="M0 15 H42 L50 4 L58 26 L66 15 H150"/>
-            </svg>
-        </div>
+:root{
+    --ink:#14213D;
+    --cloud:#F5F7FB;
+    --teal:#06B6A8;
+    --teal-dark:#059488;
+    --violet:#7C5CFF;
+    --amber:#FFB627;
+    --coral:#FF5D73;
+}
 
-        <div class="space-y-5">
-            <div class="relative">
-                <i class="fas fa-user absolute left-5 top-1/2 -translate-y-1/2 text-gray-300"></i>
-                <input type="text" id="username" placeholder="Username" class="mm-input" style="padding-left:48px">
-            </div>
-            <div class="relative">
-                <i class="fas fa-lock absolute left-5 top-1/2 -translate-y-1/2 text-gray-300"></i>
-                <input type="password" id="password" placeholder="Parolă" class="mm-input" style="padding-left:48px">
-            </div>
+*{ font-family:'Plus Jakarta Sans', sans-serif; }
 
-            <button onclick="login()" class="btn-primary w-full text-lg">
-                Intră în sistem
-            </button>
-        </div>
-    </div>
+body{ background:var(--cloud); }
 
-    <script>
-        function login() {
-            const username = document.getElementById("username").value.trim();
-            const password = document.getElementById("password").value.trim();
+.font-display{ font-family:'Space Grotesk', sans-serif; }
 
-            if (username === "admin" && password === "Smurd2026..") {
-                localStorage.setItem("role", "admin");
-                window.location.href = "index.html";
-            } else if (username === "user" && password === "123") {
-                localStorage.setItem("role", "user");
-                window.location.href = "cereri.html";
-            } else {
-                alert("Username sau parolă greșită!");
-            }
-        }
-    </script>
-</body>
-</html>
+input[type="radio"], input[type="checkbox"]{ accent-color:var(--teal); }
+
+/* Sidebar */
+.mm-sidebar{
+    background:linear-gradient(160deg, var(--ink) 0%, var(--teal-dark) 55%, var(--violet) 135%);
+}
+.mm-logo{ background:#fff; color:var(--teal-dark); }
+.mm-nav-item{
+    display:flex; align-items:center; gap:14px;
+    padding:14px 20px; border-radius:16px;
+    color:rgba(255,255,255,.78); font-weight:500;
+    transition:.2s; text-decoration:none;
+}
+.mm-nav-item:hover{ background:rgba(255,255,255,.14); color:#fff; }
+.mm-nav-item.active{ background:#fff; color:var(--ink); font-weight:700; box-shadow:0 10px 22px rgba(0,0,0,.18); }
+.mm-nav-item.logout{ color:#FFD8DE; }
+.mm-nav-item.logout:hover{ background:rgba(255,93,115,.2); color:#fff; }
+
+/* Signature pulse divider */
+.pulse-divider{ width:150px; height:30px; margin:6px 0 30px; }
+.pulse-line{
+    fill:none; stroke:url(#pulseGrad); stroke-width:3.5;
+    stroke-linecap:round; stroke-linejoin:round;
+    stroke-dasharray:500; stroke-dashoffset:500;
+    animation:drawPulse 1.3s ease forwards;
+}
+@keyframes drawPulse{ to{ stroke-dashoffset:0; } }
+@media (prefers-reduced-motion:reduce){ .pulse-line{ animation:none; stroke-dashoffset:0; } }
+
+/* Stat cards */
+.stat-card{ border-radius:28px; padding:28px; }
+.stat-card .stat-label{ font-weight:700; font-size:14px; opacity:.8; }
+.stat-card .stat-value{ font-family:'Space Grotesk', sans-serif; font-size:42px; font-weight:700; margin-top:10px; }
+.stat-violet{ background:#F0ECFF; color:#5A3FD6; }
+.stat-teal{ background:#DDFBF5; color:var(--teal-dark); }
+.stat-amber{ background:#FFF3DC; color:#B9740A; }
+.stat-coral{ background:#FFE1E6; color:#C81E3E; }
+.stat-ink{ background:var(--ink); color:#fff; }
+.stat-ink .stat-label{ opacity:.65; }
+
+/* Panels */
+.mm-panel{ background:#fff; border-radius:32px; box-shadow:0 20px 45px rgba(20,33,61,.07); }
+
+/* Buttons */
+.btn-primary{
+    background:linear-gradient(135deg, var(--teal), var(--violet));
+    color:#fff; font-weight:700; border:none; border-radius:18px;
+    padding:16px 30px; cursor:pointer; transition:.2s;
+    box-shadow:0 12px 26px rgba(124,92,255,.28);
+}
+.btn-primary:hover{ transform:translateY(-2px); box-shadow:0 16px 32px rgba(124,92,255,.36); }
+
+/* Badges */
+.badge{ display:inline-block; padding:7px 16px; border-radius:999px; font-size:13px; font-weight:700; }
+.badge-emis{ background:#DDFBF5; color:var(--teal-dark); }
+.badge-nou{ background:#FFF0D6; color:#B9740A; }
+.badge-respins{ background:#FFE1E6; color:#C81E3E; }
+
+/* Icon action buttons */
+.icon-btn{
+    width:40px; height:40px; border-radius:12px; border:none;
+    display:inline-flex; align-items:center; justify-content:center;
+    cursor:pointer; transition:.2s; margin:0 3px;
+}
+.icon-btn:hover{ transform:translateY(-2px); }
+.icon-teal{ background:#DDFBF5; color:var(--teal-dark); }
+.icon-coral{ background:#FFE1E6; color:#C81E3E; }
+.icon-violet{ background:#F0ECFF; color:#5A3FD6; }
+.icon-ink{ background:#EEF1F8; color:var(--ink); }
+
+/* Inputs */
+.mm-input, .mm-select, .mm-textarea{
+    width:100%; border:2px solid #EAEDF6; border-radius:18px;
+    padding:16px 20px; background:#FBFCFF; transition:.2s;
+}
+.mm-input:focus, .mm-select:focus, .mm-textarea:focus{
+    outline:none; border-color:var(--teal); background:#fff;
+}
+
+/* Radio pills */
+.pill-radio{
+    display:inline-flex; align-items:center; gap:8px;
+    padding:10px 22px; border-radius:999px; border:2px solid #EAEDF6;
+    cursor:pointer; font-weight:600; color:#5B6478; transition:.2s;
+}
+.pill-radio:hover{ border-color:var(--teal); }
+
+/* Auth background */
+.mm-auth-bg{ background:linear-gradient(135deg, var(--ink), var(--teal-dark) 55%, var(--violet)); }
+
+/* History cards */
+.hist-card{ border-radius:24px; background:#fff; box-shadow:0 10px 25px rgba(20,33,61,.06); border-left:8px solid; }
