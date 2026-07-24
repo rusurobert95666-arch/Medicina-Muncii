@@ -8,41 +8,53 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/theme.css">
 </head>
-<body class="bg-gray-50">
+<body>
 
 <div class="flex min-h-screen">
-    <div class="w-72 bg-gradient-to-b from-blue-800 to-blue-900 text-white p-6 fixed h-full shadow-2xl">
-        <div class="flex items-center gap-4 mb-16">
-            <div class="w-14 h-14 bg-white rounded-3xl flex items-center justify-center text-blue-800 font-bold text-4xl shadow">MM</div>
+    <div class="w-72 mm-sidebar text-white p-6 fixed h-full shadow-2xl">
+        <div class="flex items-center gap-4 mb-14">
+            <div class="w-14 h-14 mm-logo rounded-3xl flex items-center justify-center font-display font-bold text-3xl shadow">MM</div>
             <div>
-                <h1 class="font-bold text-3xl tracking-tight">Medicina Muncii</h1>
-                <p class="text-blue-200 text-sm">Atlantis</p>
+                <h1 class="font-display font-bold text-2xl leading-tight">Medicina Muncii</h1>
+                <p class="text-white/60 text-sm">Atlantis</p>
             </div>
         </div>
         <nav class="space-y-2">
-            <a href="#" class="flex items-center gap-4 px-6 py-4 bg-white/10 backdrop-blur rounded-2xl font-medium"><i class="fas fa-home"></i> Dashboard</a>
-            <a href="cereri.html" class="flex items-center gap-4 px-6 py-4 hover:bg-white/10 rounded-2xl"><i class="fas fa-file-medical"></i> Cereri Noi</a>
-            <a href="istoric.html" class="flex items-center gap-4 px-6 py-4 hover:bg-white/10 rounded-2xl"><i class="fas fa-history"></i> Istoric CNP</a>
-            <a href="#" onclick="logout()" class="flex items-center gap-4 px-6 py-4 hover:bg-white/10 rounded-2xl text-red-300"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            <a href="#" class="mm-nav-item active"><i class="fas fa-house w-5"></i> Dashboard</a>
+            <a href="cereri.html" class="mm-nav-item"><i class="fas fa-file-medical w-5"></i> Cereri Noi</a>
+            <a href="istoric.html" class="mm-nav-item"><i class="fas fa-clock-rotate-left w-5"></i> Istoric CNP</a>
+            <a href="#" onclick="logout()" class="mm-nav-item logout"><i class="fas fa-arrow-right-from-bracket w-5"></i> Logout</a>
         </nav>
     </div>
 
     <div class="flex-1 ml-72 p-10">
-        <h1 class="text-4xl font-bold mb-8 text-gray-800">Dashboard</h1>
+        <h1 class="font-display text-4xl font-bold text-[var(--ink)]">Dashboard</h1>
+        <div class="pulse-divider">
+            <svg viewBox="0 0 150 30" width="100%" height="100%">
+                <defs>
+                    <linearGradient id="pulseGrad" x1="0" y1="0" x2="1" y2="0">
+                        <stop offset="0%" stop-color="#06B6A8"/>
+                        <stop offset="100%" stop-color="#7C5CFF"/>
+                    </linearGradient>
+                </defs>
+                <path class="pulse-line" d="M0 15 H42 L50 4 L58 26 L66 15 H150"/>
+            </svg>
+        </div>
 
-        <div class="grid grid-cols-4 gap-6 mb-12" id="stats"></div>
+        <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-6 mb-12" id="stats"></div>
 
-        <div class="bg-white rounded-3xl shadow-xl p-8">
-            <h2 class="text-2xl font-semibold mb-6 text-gray-800">Ultimele cereri</h2>
+        <div class="mm-panel p-8">
+            <h2 class="font-display text-2xl font-bold mb-6 text-[var(--ink)]">Ultimele cereri</h2>
             <table class="w-full">
                 <thead>
-                    <tr class="border-b text-gray-500">
-                        <th class="text-left p-5">Nume</th>
-                        <th class="text-left p-5">Firmă</th>
-                        <th class="text-center p-5">Status</th>
-                        <th class="text-center p-5">Data</th>
-                        <th class="text-center p-5">Acțiuni</th>
+                    <tr class="border-b border-gray-100 text-gray-400 text-sm">
+                        <th class="text-left p-5 font-semibold">Nume</th>
+                        <th class="text-left p-5 font-semibold">Firmă</th>
+                        <th class="text-center p-5 font-semibold">Status</th>
+                        <th class="text-center p-5 font-semibold">Data</th>
+                        <th class="text-center p-5 font-semibold">Acțiuni</th>
                     </tr>
                 </thead>
                 <tbody id="cereriBody" class="text-gray-700"></tbody>
@@ -78,33 +90,39 @@
     }
 
     function loadStats() {
-        db.collection("cereri").get().then(snapshot => {
+        db.collection("cereri").onSnapshot(snapshot => {
             const total = snapshot.size;
             let emise = 0;
             let asteptare = 0;
+            let respinse = 0;
 
             snapshot.forEach(doc => {
                 const status = doc.data().status;
                 if (status === "Emis") emise++;
+                else if (status === "Respins") respinse++;
                 else asteptare++;
             });
 
             document.getElementById("stats").innerHTML = `
-                <div class="bg-white p-8 rounded-3xl shadow">
-                    <p class="text-gray-500">Cereri Noi</p>
-                    <p class="text-6xl font-bold text-blue-600 mt-4">${asteptare}</p>
+                <div class="stat-card stat-violet">
+                    <p class="stat-label">Cereri Noi</p>
+                    <p class="stat-value">${asteptare}</p>
                 </div>
-                <div class="bg-white p-8 rounded-3xl shadow">
-                    <p class="text-gray-500">Avize Emise</p>
-                    <p class="text-6xl font-bold text-green-600 mt-4">${emise}</p>
+                <div class="stat-card stat-teal">
+                    <p class="stat-label">Avize Emise</p>
+                    <p class="stat-value">${emise}</p>
                 </div>
-                <div class="bg-white p-8 rounded-3xl shadow">
-                    <p class="text-gray-500">În Așteptare</p>
-                    <p class="text-6xl font-bold text-orange-500 mt-4">${asteptare}</p>
+                <div class="stat-card stat-amber">
+                    <p class="stat-label">În Așteptare</p>
+                    <p class="stat-value">${asteptare}</p>
                 </div>
-                <div class="bg-white p-8 rounded-3xl shadow">
-                    <p class="text-gray-500">Total</p>
-                    <p class="text-6xl font-bold mt-4">${total}</p>
+                <div class="stat-card stat-coral">
+                    <p class="stat-label">Respinse</p>
+                    <p class="stat-value">${respinse}</p>
+                </div>
+                <div class="stat-card stat-ink">
+                    <p class="stat-label">Total</p>
+                    <p class="stat-value">${total}</p>
                 </div>
             `;
         });
@@ -120,20 +138,21 @@
                 const c = doc.data();
                 const id = doc.id;
                 const tr = document.createElement("tr");
-                tr.className = "border-b hover:bg-gray-50";
+                tr.className = "border-b border-gray-50 hover:bg-[#FAFBFF]";
                 tr.innerHTML = `
-                    <td class="p-5 font-medium">${c.nume}</td>
-                    <td class="p-5">${c.firma}</td>
+                    <td class="p-5 font-semibold text-[var(--ink)]">${c.nume}</td>
+                    <td class="p-5 text-gray-500">${c.firma}</td>
                     <td class="text-center">
-                        <span class="px-4 py-1 rounded-full text-sm ${c.status === 'Emis' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'}">
+                        <span class="badge ${c.status === 'Emis' ? 'badge-emis' : (c.status === 'Respins' ? 'badge-respins' : 'badge-nou')}">
                             ${c.status}
                         </span>
                     </td>
-                    <td class="text-center text-sm">${c.data}</td>
+                    <td class="text-center text-sm text-gray-400">${c.data}</td>
                     <td class="text-center">
-                        ${c.status !== 'Emis' ? `<button onclick="emiteAviz('${id}')" class="text-green-600 hover:text-green-800 mx-2"><i class="fas fa-check"></i></button>` : ''}
-                        <button onclick="viewCerere('${id}')" class="text-blue-600 hover:text-blue-800 mx-2"><i class="fas fa-eye"></i></button>
-                        <button onclick="stergeCerere('${id}')" class="text-red-600 hover:text-red-800 mx-2"><i class="fas fa-trash"></i></button>
+                        ${(c.status !== 'Emis' && c.status !== 'Respins') ? `<button onclick="emiteAviz('${id}')" class="icon-btn icon-teal" title="Emite aviz"><i class="fas fa-check"></i></button>` : ''}
+                        ${(c.status !== 'Emis' && c.status !== 'Respins') ? `<button onclick="respingeCerere('${id}')" class="icon-btn icon-coral" title="Respinge cererea"><i class="fas fa-ban"></i></button>` : ''}
+                        <button onclick="viewCerere('${id}')" class="icon-btn icon-violet" title="Vizualizează"><i class="fas fa-eye"></i></button>
+                        <button onclick="stergeCerere('${id}')" class="icon-btn icon-ink" title="Șterge"><i class="fas fa-trash"></i></button>
                     </td>
                 `;
                 tbody.appendChild(tr);
@@ -141,9 +160,32 @@
         });
     }
 
+    const SHEET_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbznBnl2w4gikWSfCXH9qGORXMnJ6RVAVyHjeOVuexf9VBFcY8iAsUCzf7H64WxSpRBCiQ/exec";
+
     function emiteAviz(id) {
         if (!confirm("Confirmi emiterea avizului?")) return;
-        db.collection("cereri").doc(id).update({ status: "Emis" });
+
+        db.collection("cereri").doc(id).get().then(doc => {
+            const c = doc.data();
+            db.collection("cereri").doc(id).update({ status: "Emis" });
+
+            fetch(SHEET_WEBHOOK_URL, {
+                method: "POST",
+                mode: "no-cors",
+                headers: { "Content-Type": "text/plain;charset=utf-8" },
+                body: JSON.stringify({
+                    nume: c.nume,
+                    cnp: c.cnp,
+                    firma: c.firma,
+                    data: new Date().toISOString()
+                })
+            }).catch(err => console.error("Eroare la trimiterea către Google Sheet:", err));
+        });
+    }
+
+    function respingeCerere(id) {
+        if (!confirm("Confirmi respingerea acestei cereri?\n\nUtilizatorul va putea depune imediat o cerere nouă cu același CNP (respingerea nu blochează 2 luni).")) return;
+        db.collection("cereri").doc(id).update({ status: "Respins" });
     }
 
     function stergeCerere(id) {
@@ -156,32 +198,32 @@
             if (doc.exists) {
                 const c = doc.data();
                 let html = `
-                    <div style="padding:40px; font-family:Arial; max-width:1000px; margin:auto; background:#f8fafc; border:2px solid #1e3a8a; border-radius:12px;">
-                        <h2 style="text-align:center; color:#1e3a8a;">Detalii Cerere Completă</h2>
-                        <hr style="margin:20px 0;">
+                    <div style="padding:40px; font-family:'Plus Jakarta Sans',Arial,sans-serif; max-width:1000px; margin:auto; background:#F5F7FB; border-radius:24px;">
+                        <h2 style="text-align:center; color:#14213D; font-family:'Space Grotesk',sans-serif;">Detalii Cerere Completă</h2>
+                        <hr style="margin:20px 0; border:none; border-top:2px solid #E5E9F2;">
                         <p><strong>Nume & Prenume:</strong> ${c.nume}</p>
                         <p><strong>Firmă:</strong> ${c.firma}</p>
                         <p><strong>Locație:</strong> ${c.locatie || 'N/A'}</p>
                         <p><strong>CNP:</strong> ${c.cnp || 'N/A'}</p>
                         <p><strong>Data:</strong> ${c.data}</p>
-                        <hr style="margin:20px 0;">
-                        <h3>Stare de sănătate</h3>
+                        <hr style="margin:20px 0; border:none; border-top:2px solid #E5E9F2;">
+                        <h3 style="color:#059488;">Stare de sănătate</h3>
                         <p>I. Boli cronice: ${c.boli || 'Nu'} ${c.boliSpec ? '- ' + c.boliSpec : ''}</p>
                         <p>II. Alergii: ${c.alergii || 'Nu'} ${c.alergiiSpec ? '- ' + c.alergiiSpec : ''}</p>
                         <p>III. Tratament: ${c.tratament || 'Nu'} ${c.tratamentSpec ? '- ' + c.tratamentSpec : ''}</p>
                         <p>IV. Intervenții: ${c.interventii || 'Nu'} ${c.interventiiSpec ? '- ' + c.interventiiSpec : ''}</p>
-                        <h3>Factori de risc</h3>
+                        <h3 style="color:#059488;">Factori de risc</h3>
                         <p>V. Fumați: ${c.fumat || 'Nu'}</p>
                         <p>VI. Alcool: ${c.alcool || 'Nu'}</p>
                         <p>VII. Echipă: ${c.echipa || 'Da'}</p>
-                        <h3>Simptome actuale</h3>
+                        <h3 style="color:#059488;">Simptome actuale</h3>
                         <p>Dureri de cap frecvente: ${c.s1 || 'Nu'}</p>
                         <p>Tulburări de vedere: ${c.s2 || 'Nu'}</p>
                         <p>Dureri de spate / articulații: ${c.s3 || 'Nu'}</p>
                         <p>Probleme respiratorii: ${c.s4 || 'Nu'}</p>
                         <p>Probleme de auz: ${c.s5 || 'Nu'}</p>
                         <p>Amețeli: ${c.s6 || 'Nu'}</p>
-                        <hr style="margin:20px 0;">
+                        <hr style="margin:20px 0; border:none; border-top:2px solid #E5E9F2;">
                         <p><strong>Status:</strong> ${c.status}</p>
                     </div>
                 `;

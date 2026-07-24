@@ -5,16 +5,40 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Medicina Muncii</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/theme.css">
 </head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen">
-    <div class="bg-white p-10 rounded-3xl shadow-2xl w-96">
-        <h1 class="text-3xl font-bold text-center mb-8 text-blue-900">Login</h1>
+<body class="mm-auth-bg flex items-center justify-center min-h-screen p-6">
+    <div class="bg-white p-10 rounded-[36px] shadow-2xl w-full max-w-md">
+        <div class="flex flex-col items-center mb-6">
+            <div class="w-16 h-16 rounded-3xl flex items-center justify-center font-display font-bold text-3xl mb-4" style="background:linear-gradient(135deg,#06B6A8,#7C5CFF); color:#fff;">MM</div>
+            <h1 class="font-display text-3xl font-bold text-[var(--ink)]">Medicina Muncii</h1>
+            <p class="text-gray-400 text-sm">Atlantis</p>
+        </div>
 
-        <div class="space-y-6">
-            <input type="text" id="username" placeholder="Username" class="w-full border rounded-2xl px-5 py-4">
-            <input type="password" id="password" placeholder="Parolă" class="w-full border rounded-2xl px-5 py-4">
+        <div class="pulse-divider mx-auto">
+            <svg viewBox="0 0 150 30" width="100%" height="100%">
+                <defs>
+                    <linearGradient id="pulseGrad" x1="0" y1="0" x2="1" y2="0">
+                        <stop offset="0%" stop-color="#06B6A8"/>
+                        <stop offset="100%" stop-color="#7C5CFF"/>
+                    </linearGradient>
+                </defs>
+                <path class="pulse-line" d="M0 15 H42 L50 4 L58 26 L66 15 H150"/>
+            </svg>
+        </div>
 
-            <button onclick="login()" class="w-full bg-blue-600 text-white py-4 rounded-2xl text-lg font-semibold">
+        <div class="space-y-5">
+            <div class="relative">
+                <i class="fas fa-user absolute left-5 top-1/2 -translate-y-1/2 text-gray-300"></i>
+                <input type="text" id="username" placeholder="Username" class="mm-input" style="padding-left:48px">
+            </div>
+            <div class="relative">
+                <i class="fas fa-lock absolute left-5 top-1/2 -translate-y-1/2 text-gray-300"></i>
+                <input type="password" id="password" placeholder="Parolă" class="mm-input" style="padding-left:48px">
+            </div>
+
+            <button onclick="login()" class="btn-primary w-full text-lg">
                 Intră în sistem
             </button>
         </div>

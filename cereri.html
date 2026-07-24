@@ -7,97 +7,110 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/theme.css">
 </head>
-<body class="bg-gray-100">
+<body>
 
 <div class="flex min-h-screen">
-    <div class="w-64 bg-blue-700 text-white p-5 fixed h-full">
-        <div class="flex items-center gap-3 mb-10">
-            <div class="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-blue-700 font-bold text-2xl">MM</div>
+    <div class="w-72 mm-sidebar text-white p-6 fixed h-full shadow-2xl">
+        <div class="flex items-center gap-4 mb-14">
+            <div class="w-14 h-14 mm-logo rounded-3xl flex items-center justify-center font-display font-bold text-3xl shadow">MM</div>
             <div>
-                <h1 class="font-bold text-xl">Medicina Muncii</h1>
-                <p class="text-xs opacity-75">Atlantis</p>
+                <h1 class="font-display font-bold text-2xl leading-tight">Medicina Muncii</h1>
+                <p class="text-white/60 text-sm">Atlantis</p>
             </div>
         </div>
         <nav class="space-y-2">
-            <a href="index.html" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-blue-600"><i class="fas fa-home"></i> Dashboard</a>
-            <a href="#" class="flex items-center gap-3 px-4 py-3 bg-blue-600 rounded-xl"><i class="fas fa-file-medical"></i> Cereri Noi</a>
+            <a href="index.html" class="mm-nav-item"><i class="fas fa-house w-5"></i> Dashboard</a>
+            <a href="#" class="mm-nav-item active"><i class="fas fa-file-medical w-5"></i> Cereri Noi</a>
         </nav>
     </div>
 
-    <div class="flex-1 ml-64 p-10">
-        <h1 class="text-3xl font-bold mb-8">Cerere Nouă Aviz Medical</h1>
+    <div class="flex-1 ml-72 p-10">
+        <h1 class="font-display text-4xl font-bold text-[var(--ink)]">Cerere Nouă Aviz Medical</h1>
+        <div class="pulse-divider">
+            <svg viewBox="0 0 150 30" width="100%" height="100%">
+                <defs>
+                    <linearGradient id="pulseGrad" x1="0" y1="0" x2="1" y2="0">
+                        <stop offset="0%" stop-color="#06B6A8"/>
+                        <stop offset="100%" stop-color="#7C5CFF"/>
+                    </linearGradient>
+                </defs>
+                <path class="pulse-line" d="M0 15 H42 L50 4 L58 26 L66 15 H150"/>
+            </svg>
+        </div>
 
-        <div class="bg-white rounded-3xl shadow-xl p-10 max-w-4xl">
+        <div class="mm-panel p-10 max-w-4xl">
             <form id="cerereForm">
                 <div class="grid grid-cols-2 gap-6">
-                    <div><label class="block font-semibold mb-2">Nume & Prenume</label><input type="text" id="nume" class="w-full border rounded-2xl px-5 py-4" required></div>
-                    <div><label class="block font-semibold mb-2">Vârsta</label><input type="number" id="varsta" class="w-full border rounded-2xl px-5 py-4" required></div>
+                    <div><label class="block font-semibold mb-2 text-[var(--ink)]">Nume & Prenume</label><input type="text" id="nume" class="mm-input" required></div>
+                    <div><label class="block font-semibold mb-2 text-[var(--ink)]">Vârsta</label><input type="number" id="varsta" class="mm-input" required></div>
                 </div>
 
                 <div class="grid grid-cols-2 gap-6 mt-6">
-                    <div><label class="block font-semibold mb-2">Firmă</label><input type="text" id="firma" class="w-full border rounded-2xl px-5 py-4" required></div>
-                    <div><label class="block font-semibold mb-2">Locație</label><input type="text" id="locatie" class="w-full border rounded-2xl px-5 py-4" required></div>
+                    <div><label class="block font-semibold mb-2 text-[var(--ink)]">Firmă</label><input type="text" id="firma" class="mm-input" required></div>
+                    <div><label class="block font-semibold mb-2 text-[var(--ink)]">Locație</label><input type="text" id="locatie" class="mm-input" required></div>
                 </div>
 
                 <div class="mt-6">
-                    <label class="block font-semibold mb-2">CNP</label>
-                    <input type="text" id="cnp" maxlength="6" class="w-full border rounded-2xl px-5 py-4" required>
+                    <label class="block font-semibold mb-2 text-[var(--ink)]">CNP</label>
+                    <input type="text" id="cnp" maxlength="6" class="mm-input" required>
                 </div>
 
-                <h2 class="text-2xl font-bold mt-10">Formular de Evaluare – Medicina Muncii</h2>
+                <h2 class="font-display text-2xl font-bold mt-12 text-[var(--ink)]">Formular de Evaluare – Medicina Muncii</h2>
 
                 <div class="space-y-8 mt-8">
                     <div>
-                        <label class="block mb-3">I. Suferiți de boli cronice?</label>
-                        <div class="flex gap-8">
-                            <label><input type="radio" name="boli" value="Nu" checked onchange="toggleField(this, 'boli-spec')"> Nu</label>
-                            <label><input type="radio" name="boli" value="Da" onchange="toggleField(this, 'boli-spec')"> Da</label>
+                        <label class="block mb-3 font-medium text-[var(--ink)]">I. Suferiți de boli cronice?</label>
+                        <div class="flex gap-4">
+                            <label class="pill-radio"><input type="radio" name="boli" value="Nu" checked onchange="toggleField(this, 'boli-spec')"> Nu</label>
+                            <label class="pill-radio"><input type="radio" name="boli" value="Da" onchange="toggleField(this, 'boli-spec')"> Da</label>
                         </div>
-                        <textarea id="boli-spec" class="hidden w-full mt-3 border rounded-2xl p-4" placeholder="Specificați..."></textarea>
+                        <textarea id="boli-spec" class="hidden mm-textarea mt-3" placeholder="Specificați..."></textarea>
                     </div>
 
                     <div>
-                        <label class="block mb-3">II. Aveți alergii cunoscute?</label>
-                        <div class="flex gap-8">
-                            <label><input type="radio" name="alergii" value="Nu" checked onchange="toggleField(this, 'alergii-spec')"> Nu</label>
-                            <label><input type="radio" name="alergii" value="Da" onchange="toggleField(this, 'alergii-spec')"> Da</label>
+                        <label class="block mb-3 font-medium text-[var(--ink)]">II. Aveți alergii cunoscute?</label>
+                        <div class="flex gap-4">
+                            <label class="pill-radio"><input type="radio" name="alergii" value="Nu" checked onchange="toggleField(this, 'alergii-spec')"> Nu</label>
+                            <label class="pill-radio"><input type="radio" name="alergii" value="Da" onchange="toggleField(this, 'alergii-spec')"> Da</label>
                         </div>
-                        <textarea id="alergii-spec" class="hidden w-full mt-3 border rounded-2xl p-4" placeholder="Specificați..."></textarea>
+                        <textarea id="alergii-spec" class="hidden mm-textarea mt-3" placeholder="Specificați..."></textarea>
                     </div>
 
                     <div>
-                        <label class="block mb-3">III. Urmați un tratament medical în prezent?</label>
-                        <div class="flex gap-8">
-                            <label><input type="radio" name="tratament" value="Nu" checked onchange="toggleField(this, 'tratament-spec')"> Nu</label>
-                            <label><input type="radio" name="tratament" value="Da" onchange="toggleField(this, 'tratament-spec')"> Da</label>
+                        <label class="block mb-3 font-medium text-[var(--ink)]">III. Urmați un tratament medical în prezent?</label>
+                        <div class="flex gap-4">
+                            <label class="pill-radio"><input type="radio" name="tratament" value="Nu" checked onchange="toggleField(this, 'tratament-spec')"> Nu</label>
+                            <label class="pill-radio"><input type="radio" name="tratament" value="Da" onchange="toggleField(this, 'tratament-spec')"> Da</label>
                         </div>
-                        <textarea id="tratament-spec" class="hidden w-full mt-3 border rounded-2xl p-4" placeholder="Descrieți..."></textarea>
+                        <textarea id="tratament-spec" class="hidden mm-textarea mt-3" placeholder="Descrieți..."></textarea>
                     </div>
 
                     <div>
-                        <label class="block mb-3">IV. Ați avut intervenții chirurgicale sau spitalizări?</label>
-                        <div class="flex gap-8">
-                            <label><input type="radio" name="interventii" value="Nu" checked onchange="toggleField(this, 'interventii-spec')"> Nu</label>
-                            <label><input type="radio" name="interventii" value="Da" onchange="toggleField(this, 'interventii-spec')"> Da</label>
+                        <label class="block mb-3 font-medium text-[var(--ink)]">IV. Ați avut intervenții chirurgicale sau spitalizări?</label>
+                        <div class="flex gap-4">
+                            <label class="pill-radio"><input type="radio" name="interventii" value="Nu" checked onchange="toggleField(this, 'interventii-spec')"> Nu</label>
+                            <label class="pill-radio"><input type="radio" name="interventii" value="Da" onchange="toggleField(this, 'interventii-spec')"> Da</label>
                         </div>
-                        <textarea id="interventii-spec" class="hidden w-full mt-3 border rounded-2xl p-4" placeholder="Descrieți intervențiile..."></textarea>
+                        <textarea id="interventii-spec" class="hidden mm-textarea mt-3" placeholder="Descrieți intervențiile..."></textarea>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-2 gap-8 mt-10">
-                    <div><label>V. Fumați?</label><div class="flex gap-6 mt-2"><label><input type="radio" name="fumat" value="Nu" checked> Nu</label><label><input type="radio" name="fumat" value="Da"> Da</label></div></div>
-                    <div><label>VI. Consumați alcool regulat?</label><div class="flex gap-6 mt-2"><label><input type="radio" name="alcool" value="Nu" checked> Nu</label><label><input type="radio" name="alcool" value="Da"> Da</label></div></div>
-                    <div><label>VII. Vă descurcați la lucrul în echipă?</label><div class="flex gap-6 mt-2"><label><input type="radio" name="echipa" value="Nu"> Nu</label><label><input type="radio" name="echipa" value="Da" checked> Da</label></div></div>
+                    <div><label class="font-medium text-[var(--ink)]">V. Fumați?</label><div class="flex gap-4 mt-3"><label class="pill-radio"><input type="radio" name="fumat" value="Nu" checked> Nu</label><label class="pill-radio"><input type="radio" name="fumat" value="Da"> Da</label></div></div>
+                    <div><label class="font-medium text-[var(--ink)]">VI. Consumați alcool regulat?</label><div class="flex gap-4 mt-3"><label class="pill-radio"><input type="radio" name="alcool" value="Nu" checked> Nu</label><label class="pill-radio"><input type="radio" name="alcool" value="Da"> Da</label></div></div>
+                    <div><label class="font-medium text-[var(--ink)]">VII. Vă descurcați la lucrul în echipă?</label><div class="flex gap-4 mt-3"><label class="pill-radio"><input type="radio" name="echipa" value="Nu"> Nu</label><label class="pill-radio"><input type="radio" name="echipa" value="Da" checked> Da</label></div></div>
                 </div>
 
-                <div class="mt-10">
-                    <h3 class="font-semibold mb-4">Simptome actuale (În ultimele 6 luni ați avut:)</h3>
-                    <table class="w-full border border-gray-300 rounded-2xl">
-                        <thead class="bg-gray-50">
-                            <tr><th class="p-4 text-left">Simptom</th><th class="p-4 w-24">Da</th><th class="p-4 w-24">Nu</th></tr>
+                <div class="mt-12">
+                    <h3 class="font-semibold mb-4 text-[var(--ink)]">Simptome actuale (În ultimele 6 luni ați avut:)</h3>
+                    <table class="w-full border border-gray-100 rounded-3xl overflow-hidden">
+                        <thead style="background:#F0FBF9">
+                            <tr><th class="p-4 text-left text-[var(--ink)]">Simptom</th><th class="p-4 w-24">Da</th><th class="p-4 w-24">Nu</th></tr>
                         </thead>
-                        <tbody class="divide-y">
+                        <tbody class="divide-y divide-gray-100">
                             <tr><td class="p-4">Dureri de cap frecvente</td><td class="text-center"><input type="radio" name="s1" value="Da"></td><td class="text-center"><input type="radio" name="s1" value="Nu" checked></td></tr>
                             <tr><td class="p-4">Tulburări de vedere</td><td class="text-center"><input type="radio" name="s2" value="Da"></td><td class="text-center"><input type="radio" name="s2" value="Nu" checked></td></tr>
                             <tr><td class="p-4">Dureri de spate / articulații</td><td class="text-center"><input type="radio" name="s3" value="Da"></td><td class="text-center"><input type="radio" name="s3" value="Nu" checked></td></tr>
@@ -109,8 +122,8 @@
                 </div>
 
                 <div class="text-center mt-12">
-                    <button type="button" onclick="trimiteCerere()" class="bg-blue-600 hover:bg-blue-700 text-white px-12 py-5 rounded-2xl text-lg font-semibold">
-                        📤 Trimite Cererea
+                    <button type="button" onclick="trimiteCerere()" class="btn-primary text-lg">
+                        <i class="fas fa-paper-plane"></i> Trimite Cererea
                     </button>
                 </div>
             </form>
@@ -153,19 +166,23 @@
         }
 
         // Verificare valabilitate 2 luni pentru același CNP
+        // Blocarea se aplica DOAR daca exista un aviz cu status "Emis".
+        // Cererile "Respins" NU blocheaza o cerere noua.
         const querySnapshot = await db.collection("cereri").where("cnp", "==", cnp).get();
 
         if (!querySnapshot.empty) {
-            let ceaMaiVeche = null;
+            let ceaMaiRecenta = null;
             querySnapshot.forEach(doc => {
                 const data = doc.data();
-                if (!ceaMaiVeche || data.timestamp < ceaMaiVeche.timestamp) {
-                    ceaMaiVeche = data;
+                if (data.status === "Emis" && data.timestamp) {
+                    if (!ceaMaiRecenta || data.timestamp.toMillis() > ceaMaiRecenta.timestamp.toMillis()) {
+                        ceaMaiRecenta = data;
+                    }
                 }
             });
 
-            if (ceaMaiVeche && ceaMaiVeche.timestamp) {
-                const dataEmiterii = ceaMaiVeche.timestamp.toDate();
+            if (ceaMaiRecenta) {
+                const dataEmiterii = ceaMaiRecenta.timestamp.toDate();
                 const dataExpirare = new Date(dataEmiterii);
                 dataExpirare.setMonth(dataExpirare.getMonth() + 2);
 
